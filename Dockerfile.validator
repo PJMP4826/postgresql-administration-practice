@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    pip install python-dotenv
+
+WORKDIR /app
+COPY test_sql_gz_backup.py ./
+COPY .env ./
+# Los backups se montan como volumen
+
+# CMD ["python", "test_sql_gz_backup.py"]
