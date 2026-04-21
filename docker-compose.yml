@@ -1,0 +1,32 @@
+name: despacho_policial
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: despacho_policial_db_dev
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT_HOST:-5434}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backup:
+    image: prodrigestivill/postgres-backup-local
+    container_name: despacho_policial_backup_dev
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432        # override del .env, puerto interno Docker
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+    volumes:
+      - ./backups:/backups
+
+volumes:
+  postgres_data:
