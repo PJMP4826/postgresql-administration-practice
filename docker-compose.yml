@@ -1,6 +1,23 @@
 name: despacho_policial
 
 services:
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile.validator
+    container_name: despacho_policial_validator
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./backups:/app/backups
+      - ./test_sql_gz_backup.py:/app/test_sql_gz_backup.py
+      - ./.env:/app/.env
+
   postgres:
     image: postgres:17
     container_name: despacho_policial_db_dev
@@ -20,7 +37,7 @@ services:
       - .env
     environment:
       - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432        # override del .env, puerto interno Docker
+      - POSTGRES_PORT=5432 # override del .env, puerto interno Docker
       - SCHEDULE=@daily
       - BACKUP_KEEP_DAYS=7
       - BACKUP_KEEP_WEEKS=4
