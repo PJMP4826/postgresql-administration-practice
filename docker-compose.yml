@@ -36,6 +36,7 @@ services:
     env_file:
       - .env
     environment:
+      - TZ=America/Mexico_City
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432 # override del .env, puerto interno Docker
       - SCHEDULE=@daily
